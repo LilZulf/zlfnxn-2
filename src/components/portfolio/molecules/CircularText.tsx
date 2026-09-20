@@ -18,8 +18,8 @@ function composeTerms(terms: readonly string[], separator: string, termCount: nu
 
 const layerRadii = [112, 101, 90, 79, 68, 57] as const
 const layerTermCounts = [5, 5, 4, 4, 3, 3] as const
-const launchDuration = 3400
-const maximumPlaybackRate = 64
+const launchDuration = 1100
+const maximumPlaybackRate = 48
 
 export function CircularText({
 	terms,
@@ -75,7 +75,7 @@ export function CircularText({
 
 		const accelerate = (now: number) => {
 			const progress = Math.min((now - startedAt) / launchDuration, 1)
-			const easedProgress = progress ** 3
+			const easedProgress = progress ** 2
 			if (orbitAnimation) {
 				orbitAnimation.playbackRate =
 					1 + easedProgress * (maximumPlaybackRate - 1)
@@ -91,8 +91,8 @@ export function CircularText({
 				resetTimerRef.current = window.setTimeout(() => {
 					if (orbitAnimation) orbitAnimation.playbackRate = 1
 					setIsLaunching(false)
-				}, 900)
-			}, 550)
+					}, 320)
+				}, 120)
 		}
 
 		launchFrameRef.current = requestAnimationFrame(accelerate)

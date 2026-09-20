@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { type MouseEvent, useEffect, useState } from "react";
 
 const navigation = [
 	["About", "#about"],
@@ -6,57 +6,82 @@ const navigation = [
 	["Stack", "#stack"],
 	["Experiments", "#experiments"],
 	["Contact", "#contact"],
-] as const
+] as const;
 
 export function Navigation() {
-	const [open, setOpen] = useState(false)
-	const [activeSection, setActiveSection] = useState<string | null>(null)
+	const [open, setOpen] = useState(false);
+	const [activeSection, setActiveSection] = useState<string | null>(null);
 
 	useEffect(() => {
 		function onKeyDown(event: KeyboardEvent) {
-			if (event.key === "Escape") setOpen(false)
+			if (event.key === "Escape") setOpen(false);
 		}
 
-		window.addEventListener("keydown", onKeyDown)
-		return () => window.removeEventListener("keydown", onKeyDown)
-	}, [])
+		window.addEventListener("keydown", onKeyDown);
+		return () => window.removeEventListener("keydown", onKeyDown);
+	}, []);
+
+	const scrollToSection = (
+		event: MouseEvent<HTMLAnchorElement>,
+		href: string,
+	) => {
+		if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
+			return;
+		const section = document.querySelector<HTMLElement>(href);
+		if (!section) return;
+
+		event.preventDefault();
+		const headerHeight =
+			document.querySelector<HTMLElement>(".site-header")?.offsetHeight ?? 0;
+		const target =
+			section.getBoundingClientRect().top + window.scrollY - headerHeight;
+		const behavior = window.matchMedia("(prefers-reduced-motion: reduce)")
+			.matches
+			? "auto"
+			: "smooth";
+
+		window.history.pushState(null, "", href);
+		window.scrollTo({ top: Math.max(0, target), behavior });
+		setOpen(false);
+	};
 
 	useEffect(() => {
-		let frame = 0
-
-		const updateActiveSection = () => {
-			frame = 0
-			const marker = window.scrollY + window.innerHeight * 0.28
-			let nextActiveSection: string | null = null
-
-			for (const [, href] of navigation) {
-				const section = document.querySelector(href)
-				if (section && section.getBoundingClientRect().top + window.scrollY <= marker) {
-					nextActiveSection = href.slice(1)
+		const sections = navigation
+			.map(([, href]) => document.querySelector<HTMLElement>(href))
+			.filter((section): section is HTMLElement => section !== null);
+		const visibleSections = new Map<string, number>();
+		const observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (entry.isIntersecting)
+						visibleSections.set(entry.target.id, entry.intersectionRatio);
+					else visibleSections.delete(entry.target.id);
 				}
-			}
 
-			setActiveSection((current) => (current === nextActiveSection ? current : nextActiveSection))
-		}
+				const nextActiveSection =
+					[...visibleSections.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ??
+					null;
+				setActiveSection((current) =>
+					current === nextActiveSection ? current : nextActiveSection,
+				);
+			},
+			{ rootMargin: "-18% 0px -68% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] },
+		);
 
-		const onScroll = () => {
-			if (frame === 0) frame = window.requestAnimationFrame(updateActiveSection)
-		}
-
-		updateActiveSection()
-		window.addEventListener("scroll", onScroll, { passive: true })
-		window.addEventListener("resize", onScroll)
+		for (const section of sections) observer.observe(section);
 		return () => {
-			window.removeEventListener("scroll", onScroll)
-			window.removeEventListener("resize", onScroll)
-			if (frame !== 0) window.cancelAnimationFrame(frame)
-		}
-	}, [])
+			observer.disconnect();
+		};
+	}, []);
 
 	return (
 		<header className="site-header">
 			<nav className="site-nav" aria-label="Primary navigation">
-				<a href="#intro" className="wordmark" aria-label="lilzulf, back to intro">
+				<a
+					href="#intro"
+					className="wordmark"
+					aria-label="lilzulf, back to intro"
+				>
 					<span aria-hidden="true">Z/</span>
 					<span>lilzulf</span>
 				</a>
@@ -65,8 +90,11 @@ export function Navigation() {
 						<a
 							key={href}
 							href={href}
+							onClick={(event) => scrollToSection(event, href)}
 							data-active={activeSection === href.slice(1) ? "true" : undefined}
-							aria-current={activeSection === href.slice(1) ? "location" : undefined}
+							aria-current={
+								activeSection === href.slice(1) ? "location" : undefined
+							}
 						>
 							{label}
 						</a>
@@ -82,14 +110,20 @@ export function Navigation() {
 					<span>{open ? "Close" : "Menu"}</span>
 					<span aria-hidden="true">[{open ? "−" : "+"}]</span>
 				</button>
-				<div id="mobile-navigation" className="mobile-nav" data-open={open ? "true" : undefined}>
+				<div
+					id="mobile-navigation"
+					className="mobile-nav"
+					data-open={open ? "true" : undefined}
+				>
 					{navigation.map(([label, href]) => (
 						<a
 							key={href}
 							href={href}
+							onClick={(event) => scrollToSection(event, href)}
 							data-active={activeSection === href.slice(1) ? "true" : undefined}
-							aria-current={activeSection === href.slice(1) ? "location" : undefined}
-							onClick={() => setOpen(false)}
+							aria-current={
+								activeSection === href.slice(1) ? "location" : undefined
+							}
 						>
 							{label}
 						</a>
@@ -97,5 +131,5 @@ export function Navigation() {
 				</div>
 			</nav>
 		</header>
-	)
+	);
 }

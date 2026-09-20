@@ -1,12 +1,24 @@
-import { useEffect, useRef } from "react"
-import { Reveal } from "../atoms/Reveal"
-import { RevealController } from "../atoms/RevealController"
-import { SectionIndex } from "../atoms/SectionIndex"
-import { AsciiImage } from "../molecules/AsciiImage"
-import { CircularText } from "../molecules/CircularText"
-import { StackMarquee } from "../molecules/StackMarquee"
-import { Navigation } from "../organisms/Navigation"
-import type { PortfolioEntry } from "../types"
+import {
+	ChartNetwork,
+	Eye,
+	GitFork,
+	Network,
+	Radar,
+	RadioTower,
+	SatelliteDish,
+	ScanEye,
+	Share2,
+	Waypoints,
+	Webhook,
+} from "lucide-react";
+import { Reveal } from "../atoms/Reveal";
+import { RevealController } from "../atoms/RevealController";
+import { SectionIndex } from "../atoms/SectionIndex";
+import { AsciiImage } from "../molecules/AsciiImage";
+import { CircularText } from "../molecules/CircularText";
+import { StackMarquee } from "../molecules/StackMarquee";
+import { Navigation } from "../organisms/Navigation";
+import type { PortfolioEntry } from "../types";
 
 const work: readonly PortfolioEntry[] = [
 	{
@@ -30,7 +42,7 @@ const work: readonly PortfolioEntry[] = [
 			"Backend services shaped around clear interfaces, messaging, data, and infrastructure.",
 		stack: ["MICROSERVICES", "DISTRIBUTED SYSTEMS", "DOCKER"],
 	},
-] as const
+] as const;
 
 const stackGroups = [
 	["Backend", "Java / Spring Boot / Node.js / Laravel / Python / Go"],
@@ -39,7 +51,7 @@ const stackGroups = [
 	["Infrastructure", "Docker / Automation"],
 	["Frontend", "React / Next.js"],
 	["Architecture", "Microservices / API / Middleware / Distributed Systems"],
-] as const
+] as const;
 
 const marqueeItems = [
 	"JAVA",
@@ -51,7 +63,7 @@ const marqueeItems = [
 	"DOCKER",
 	"REACT",
 	"GO",
-] as const
+] as const;
 
 const orbitTerms = [
 	"AHMAD ZULFAN NAJIB",
@@ -70,33 +82,64 @@ const orbitTerms = [
 	"MICROSERVICES",
 	"EVENT DRIVEN",
 	"DISTRIBUTED SYSTEMS",
-] as const
+] as const;
+
+const blogPosts = [
+	{
+		title: "When services need a shared language",
+		summary:
+			"A practical look at the boundaries, contracts, and small decisions that keep integrations legible.",
+		src: "/media/systems-core.webp",
+		alt: "Macro study of bundled server connections",
+	},
+	{
+		title: "Designing event flows that stay observable",
+		summary:
+			"What to record before a message enters the queue, and how that context helps the next system respond.",
+		src: "/media/signal-field.webp",
+		alt: "Green signal traces crossing a dark fibre surface",
+	},
+	{
+		title: "The quiet cost of leaky boundaries",
+		summary:
+			"A note on ownership, coupling, and the hidden maintenance work created by unclear system edges.",
+		src: "/media/systems-core.webp",
+		alt: "Layered server cables in a dark technical study",
+	},
+	{
+		title: "A field guide to integration seams",
+		summary:
+			"Patterns for translating between external systems without letting one unreliable edge shape the whole platform.",
+		src: "/media/signal-field.webp",
+		alt: "Abstract green traces representing connected systems",
+	},
+	{
+		title: "Why reliability starts before deployment",
+		summary:
+			"The useful checks happen in interfaces, failure paths, and assumptions long before a service reaches production.",
+		src: "/media/systems-core.webp",
+		alt: "Close view of dark infrastructure materials and cables",
+	},
+	{
+		title: "Small automations, fewer handoffs",
+		summary:
+			"A compact argument for removing repeated manual steps before adding another layer of operational complexity.",
+		src: "/media/signal-field.webp",
+		alt: "Luminous signal lines moving across a dark surface",
+	},
+] as const;
+
+const workIcons = [Waypoints, RadioTower, GitFork] as const;
+const stackIcons = [
+	Webhook,
+	ChartNetwork,
+	RadioTower,
+	SatelliteDish,
+	Share2,
+	Network,
+] as const;
 
 export function PortfolioPage() {
-	const heroGhostRef = useRef<HTMLDivElement>(null)
-
-	useEffect(() => {
-		const ghost = heroGhostRef.current
-		const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)")
-		if (!ghost || reducedMotion.matches) return
-
-		let frame = 0
-		const updateGhostPosition = () => {
-			frame = 0
-			ghost.style.setProperty("--ghost-shift", `${Math.min(window.scrollY * 0.12, window.innerWidth * 0.08)}px`)
-		}
-		const onScroll = () => {
-			if (frame === 0) frame = window.requestAnimationFrame(updateGhostPosition)
-		}
-
-		updateGhostPosition()
-		window.addEventListener("scroll", onScroll, { passive: true })
-		return () => {
-			window.removeEventListener("scroll", onScroll)
-			if (frame !== 0) window.cancelAnimationFrame(frame)
-		}
-	}, [])
-
 	return (
 		<>
 			<a className="skip-link" href="#main-content">
@@ -105,8 +148,12 @@ export function PortfolioPage() {
 			<RevealController />
 			<Navigation />
 			<main id="main-content">
-				<section id="intro" className="hero-section" aria-labelledby="intro-title">
-					<div ref={heroGhostRef} className="hero-ghost" aria-hidden="true">
+				<section
+					id="intro"
+					className="hero-section"
+					aria-labelledby="intro-title"
+				>
+					<div className="hero-ghost" aria-hidden="true">
 						lilzulf lilzulf lilzulf
 					</div>
 					<div className="page-frame hero-grid">
@@ -116,44 +163,86 @@ export function PortfolioPage() {
 								<span data-text="ZULFAN NAJIB">ZULFAN NAJIB</span>
 							</Reveal>
 							<Reveal as="p" className="hero-summary" delay={140}>
-								Backend systems, integrations, and real-time software built for reliability.
+								Backend systems, integrations, and real-time software built for
+								reliability.
 							</Reveal>
 							<Reveal delay={210}>
 								<a className="primary-link" href="#work">
 									<span>View work</span>
-									<span aria-hidden="true">↘</span>
+									<Eye
+										className="signal-icon"
+										aria-hidden="true"
+										strokeWidth={1.5}
+									/>
 								</a>
 							</Reveal>
 						</div>
 						<Reveal className="hero-media" delay={150}>
-							<CircularText
-								terms={orbitTerms}
-								initialText="lilzulf ... SOFTWARE ENGINEER ... SYSTEM INTEGRATION ..."
-							/>
+							<div className="hero-orbit-wrap">
+								<div className="hero-glyph-network" aria-hidden="true">
+									<span className="glyph-node glyph-node-eye">
+										<ScanEye strokeWidth={1.35} />
+									</span>
+									<span className="glyph-node glyph-node-radar">
+										<Radar strokeWidth={1.35} />
+									</span>
+									<span className="glyph-node glyph-node-network">
+										<Network strokeWidth={1.35} />
+									</span>
+									<span className="glyph-node glyph-node-signal">
+										<RadioTower strokeWidth={1.35} />
+									</span>
+								</div>
+								<CircularText
+									terms={orbitTerms}
+									initialText="lilzulf ... SOFTWARE ENGINEER ... SYSTEM INTEGRATION ..."
+								/>
+							</div>
 						</Reveal>
 					</div>
 				</section>
 
-				<section id="about" className="portfolio-section about-section" aria-labelledby="about-title">
+				<section
+					id="about"
+					className="portfolio-section about-section"
+					aria-labelledby="about-title"
+				>
 					<div className="page-frame section-grid">
 						<SectionIndex number="02" />
 						<div className="section-content about-content">
 							<Reveal as="h2" id="about-title">
 								I build at the point where systems need to talk.
 							</Reveal>
+							<Reveal className="about-signal-map" delay={70}>
+								<div aria-hidden="true">
+									<Network className="about-network-main" strokeWidth={1.2} />
+									<Eye className="about-network-eye" strokeWidth={1.2} />
+									<Waypoints
+										className="about-network-points"
+										strokeWidth={1.2}
+									/>
+								</div>
+							</Reveal>
 							<div className="about-columns">
 								<Reveal as="p" delay={80}>
-									Software Engineer focused on backend engineering, fullstack development, and system integration.
+									Software Engineer focused on backend engineering, fullstack
+									development, and system integration.
 								</Reveal>
 								<Reveal as="p" delay={140}>
-									Interested in distributed architecture, automation, AI, infrastructure, and software that stays reliable under real-world conditions.
+									Interested in distributed architecture, automation, AI,
+									infrastructure, and software that stays reliable under
+									real-world conditions.
 								</Reveal>
 							</div>
 						</div>
 					</div>
 				</section>
 
-				<section id="work" className="portfolio-section work-section" aria-labelledby="work-title">
+				<section
+					id="work"
+					className="portfolio-section work-section"
+					aria-labelledby="work-title"
+				>
 					<div className="page-frame section-grid">
 						<SectionIndex number="03" />
 						<div className="section-content">
@@ -162,7 +251,22 @@ export function PortfolioPage() {
 							</Reveal>
 							<div className="work-list">
 								{work.map((entry, index) => (
-									<Reveal as="article" className="work-row" key={entry.id} delay={index * 70}>
+									<Reveal
+										as="article"
+										className={`work-row work-row-${index + 1}`}
+										key={entry.id}
+										delay={index * 70}
+									>
+										{(() => {
+											const WorkIcon = workIcons[index];
+											return (
+												<WorkIcon
+													className="work-symbol"
+													aria-hidden="true"
+													strokeWidth={1.25}
+												/>
+											);
+										})()}
 										<div className="work-number">0{index + 1}</div>
 										<div>
 											<h3>{entry.title}</h3>
@@ -180,7 +284,11 @@ export function PortfolioPage() {
 					</div>
 				</section>
 
-				<section id="stack" className="portfolio-section stack-section" aria-labelledby="stack-title">
+				<section
+					id="stack"
+					className="portfolio-section stack-section"
+					aria-labelledby="stack-title"
+				>
 					<StackMarquee items={marqueeItems} />
 					<div className="page-frame section-grid">
 						<SectionIndex number="04" />
@@ -189,10 +297,59 @@ export function PortfolioPage() {
 								Tools are chosen around the system.
 							</Reveal>
 							<div className="stack-list">
-								{stackGroups.map(([category, items], index) => (
-									<Reveal className="stack-row" key={category} delay={index * 45}>
-										<h3>{category}</h3>
-										<p>{items}</p>
+								{stackGroups.map(([category, items], index) => {
+									const StackIcon = stackIcons[index];
+									return (
+										<Reveal
+											className={`stack-row stack-row-${index + 1}`}
+											key={category}
+											delay={index * 45}
+										>
+											<div className="stack-row-heading">
+												<StackIcon
+													className="stack-symbol"
+													aria-hidden="true"
+													strokeWidth={1.35}
+												/>
+												<h3>{category}</h3>
+											</div>
+											<p>{items}</p>
+										</Reveal>
+									);
+								})}
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<section
+					id="experiments"
+					className="portfolio-section experiments-section"
+					aria-labelledby="experiments-title"
+				>
+					<div className="page-frame section-grid">
+						<SectionIndex number="05" />
+						<div className="section-content blog-content">
+							<Reveal className="experiments-heading">
+								<h2 id="experiments-title">Notes from the system.</h2>
+								<p>
+									Short writing on integrations, distributed systems, and the
+									work between services.
+								</p>
+							</Reveal>
+							<div className="blog-list">
+								{blogPosts.map((post, index) => (
+									<Reveal
+										as="article"
+										className="blog-card"
+										key={post.title}
+										delay={index * 55}
+									>
+										<AsciiImage src={post.src} alt={post.alt} />
+										<div className="blog-card-copy">
+											<h3>{post.title}</h3>
+											<p>{post.summary}</p>
+										</div>
 									</Reveal>
 								))}
 							</div>
@@ -200,51 +357,67 @@ export function PortfolioPage() {
 					</div>
 				</section>
 
-				<section id="experiments" className="portfolio-section experiments-section" aria-labelledby="experiments-title">
-					<div className="page-frame section-grid">
-						<SectionIndex number="05" />
-						<div className="section-content experiments-content">
-							<Reveal className="experiments-heading">
-								<h2 id="experiments-title">Interfaces as working experiments.</h2>
-								<p>Canvas transformation, generative typography, and progressive interaction are part of this page itself.</p>
-							</Reveal>
-							<Reveal className="experiment-ascii" delay={100}>
-								<AsciiImage
-									src="/media/systems-core.webp"
-									alt="Editorial macro study of dark server connections and bundled cables"
-								/>
-							</Reveal>
-							<Reveal className="signal-media" delay={130}>
-								<img
-									src="/media/signal-field.webp"
-									alt="Generated abstract study of green signal traces passing over dark fibre materials"
-									width="1600"
-									height="1066"
-									loading="lazy"
-									decoding="async"
-								/>
-							</Reveal>
-						</div>
-					</div>
-				</section>
-
-				<section id="contact" className="portfolio-section contact-section" aria-labelledby="contact-title">
+				<section
+					id="contact"
+					className="portfolio-section contact-section"
+					aria-labelledby="contact-title"
+				>
 					<div className="page-frame section-grid">
 						<SectionIndex number="06" />
 						<div className="section-content contact-content">
-							<Reveal as="p">THE SIGNAL ENDS HERE.</Reveal>
-							<Reveal as="h2" id="contact-title" delay={70}>
-								Find me as <span>lilzulf.</span>
-							</Reveal>
+							<div className="contact-heading-grid">
+								<div>
+									<Reveal as="p">THE SIGNAL ENDS HERE.</Reveal>
+									<Reveal as="h2" id="contact-title" delay={70}>
+										Find me as <span>lilzulf.</span>
+									</Reveal>
+								</div>
+								<Reveal className="contact-beacon" delay={100}>
+									<div aria-hidden="true">
+										<Radar
+											className="contact-beacon-radar"
+											strokeWidth={1.05}
+										/>
+										<Eye className="contact-beacon-eye" strokeWidth={1.25} />
+										<Waypoints
+											className="contact-beacon-points"
+											strokeWidth={1.25}
+										/>
+									</div>
+								</Reveal>
+							</div>
 							<Reveal className="contact-panel" delay={100}>
 								<div className="contact-panel-intro">
 									<span className="contact-panel-index">[ OPEN CHANNEL ]</span>
-									<p>For systems, collaborations, or a thoughtful exchange about software.</p>
+									<p>
+										For systems, collaborations, or a thoughtful exchange about
+										software.
+									</p>
+									<a
+										className="whatsapp-link"
+										href="https://wa.me/?text=Halo%20Ahmad%2C%20saya%20ingin%20berdiskusi%20tentang%20proyek."
+										target="_blank"
+										rel="noreferrer"
+									>
+										Send to WhatsApp{" "}
+										<RadioTower
+											className="signal-icon"
+											aria-hidden="true"
+											strokeWidth={1.5}
+										/>
+									</a>
 								</div>
-								<div className="contact-details" aria-label="Contact details">
+								<div className="contact-details">
 									<div className="contact-detail">
 										<span>EMAIL</span>
-										<a href="mailto:hello@lilzulf.dev">hello@lilzulf.dev ↗</a>
+										<a href="mailto:hello@lilzulf.dev">
+											hello@lilzulf.dev{" "}
+											<Waypoints
+												className="signal-icon"
+												aria-hidden="true"
+												strokeWidth={1.5}
+											/>
+										</a>
 									</div>
 									<div className="contact-detail">
 										<span>STATUS</span>
@@ -272,5 +445,5 @@ export function PortfolioPage() {
 				</div>
 			</footer>
 		</>
-	)
+	);
 }

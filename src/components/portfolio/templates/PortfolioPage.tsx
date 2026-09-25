@@ -3,10 +3,8 @@ import {
 	Eye,
 	GitFork,
 	Network,
-	Radar,
 	RadioTower,
 	SatelliteDish,
-	ScanEye,
 	Share2,
 	Waypoints,
 	Webhook,
@@ -15,7 +13,7 @@ import { Reveal } from "../atoms/Reveal";
 import { RevealController } from "../atoms/RevealController";
 import { SectionIndex } from "../atoms/SectionIndex";
 import { AsciiImage } from "../molecules/AsciiImage";
-import { CircularText } from "../molecules/CircularText";
+import { HeroRadar } from "../molecules/HeroRadar";
 import { StackMarquee } from "../molecules/StackMarquee";
 import { Navigation } from "../organisms/Navigation";
 import type { PortfolioEntry } from "../types";
@@ -65,7 +63,7 @@ const marqueeItems = [
 	"GO",
 ] as const;
 
-const orbitTerms = [
+const radarTerms = [
 	"AHMAD ZULFAN NAJIB",
 	"lilzulf",
 	"SOFTWARE ENGINEER",
@@ -89,8 +87,8 @@ const blogPosts = [
 		title: "When services need a shared language",
 		summary:
 			"A practical look at the boundaries, contracts, and small decisions that keep integrations legible.",
-		src: "/media/systems-core.webp",
-		alt: "Macro study of bundled server connections",
+		src: "/media/earth-signal.png",
+		alt: "Earth viewed from low orbit with a thin green atmospheric rim",
 	},
 	{
 		title: "Designing event flows that stay observable",
@@ -103,8 +101,8 @@ const blogPosts = [
 		title: "The quiet cost of leaky boundaries",
 		summary:
 			"A note on ownership, coupling, and the hidden maintenance work created by unclear system edges.",
-		src: "/media/systems-core.webp",
-		alt: "Layered server cables in a dark technical study",
+		src: "/media/earth-signal.png",
+		alt: "Earth viewed from low orbit with a thin green atmospheric rim",
 	},
 	{
 		title: "A field guide to integration seams",
@@ -117,8 +115,8 @@ const blogPosts = [
 		title: "Why reliability starts before deployment",
 		summary:
 			"The useful checks happen in interfaces, failure paths, and assumptions long before a service reaches production.",
-		src: "/media/systems-core.webp",
-		alt: "Close view of dark infrastructure materials and cables",
+		src: "/media/earth-signal.png",
+		alt: "Earth viewed from low orbit with a thin green atmospheric rim",
 	},
 	{
 		title: "Small automations, fewer handoffs",
@@ -178,26 +176,7 @@ export function PortfolioPage() {
 							</Reveal>
 						</div>
 						<Reveal className="hero-media" delay={150}>
-							<div className="hero-orbit-wrap">
-								<div className="hero-glyph-network" aria-hidden="true">
-									<span className="glyph-node glyph-node-eye">
-										<ScanEye strokeWidth={1.35} />
-									</span>
-									<span className="glyph-node glyph-node-radar">
-										<Radar strokeWidth={1.35} />
-									</span>
-									<span className="glyph-node glyph-node-network">
-										<Network strokeWidth={1.35} />
-									</span>
-									<span className="glyph-node glyph-node-signal">
-										<RadioTower strokeWidth={1.35} />
-									</span>
-								</div>
-								<CircularText
-									terms={orbitTerms}
-									initialText="lilzulf ... SOFTWARE ENGINEER ... SYSTEM INTEGRATION ..."
-								/>
-							</div>
+							<HeroRadar terms={radarTerms} />
 						</Reveal>
 					</div>
 				</section>
@@ -365,6 +344,29 @@ export function PortfolioPage() {
 					<div className="page-frame section-grid">
 						<SectionIndex number="06" />
 						<div className="section-content contact-content">
+							<pre
+								className="contact-ascii-earth"
+								aria-hidden="true"
+							>{`                  .-=========-.
+             .-=+*#%%%%%%%%%%%#*+=-.
+          .-+*#%%%%%##***##%%%%%#*+-.
+        .=*%%%%%#+-.  .::::.  .-+#%%%%*=.
+      .=#%%%%%*-   .-+*#%%%%#*-.   -*%%%%#=.
+     -#%%%%%+.   .+%%%%%##%%%%%+.   .+%%%%%-
+    *%%%%%+   .-#%%%*:  ..  :*%%%#-.   +%%%%%*
+   #%%%%%-  .+%%%%+.  .-=+=-.  .+%%%%+.  -%%%%%#
+  *%%%%%:  -%%%%*  .+%%%%%%#%%+.  *%%%%-  :%%%%%*
+  %%%%%=  #%%%%-  *%%%%%#*#%%%%%*  -%%%%#  =%%%%%
+  %%%%%=  #%%%%:  %%%%%:   :%%%%%  :%%%%#  =%%%%%
+  *%%%%%:  -%%%%*  *%%%%%#*#%%%%%*  *%%%%-  :%%%%%*
+   #%%%%%-  .+%%%%+.  .-=+=-.  .+%%%%+.  -%%%%%#
+    *%%%%%+   .-#%%%*:  ..  :*%%%#-.   +%%%%%*
+     -#%%%%%+.   .+%%%%%##%%%%%+.   .+%%%%%-
+      .=#%%%%%*-   .-+*#%%%%#*-.   -*%%%%#=.
+        .=*%%%%%#+-.  .::::.  .-+#%%%%*=.
+          .-+*#%%%%%##***##%%%%%#*+-.
+             .-=+*#%%%%%%%%%%%#*+=-.
+                  '-=========-'`}</pre>
 							<div className="contact-heading-grid">
 								<div>
 									<Reveal as="p">THE SIGNAL ENDS HERE.</Reveal>
@@ -372,19 +374,6 @@ export function PortfolioPage() {
 										Find me as <span>lilzulf.</span>
 									</Reveal>
 								</div>
-								<Reveal className="contact-beacon" delay={100}>
-									<div aria-hidden="true">
-										<Radar
-											className="contact-beacon-radar"
-											strokeWidth={1.05}
-										/>
-										<Eye className="contact-beacon-eye" strokeWidth={1.25} />
-										<Waypoints
-											className="contact-beacon-points"
-											strokeWidth={1.25}
-										/>
-									</div>
-								</Reveal>
 							</div>
 							<Reveal className="contact-panel" delay={100}>
 								<div className="contact-panel-intro">

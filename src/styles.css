@@ -690,21 +690,22 @@ section { scroll-margin-top: var(--header-height); }
 	position: absolute;
 	z-index: -1;
 	top: clamp(-14rem, -15vw, -5rem);
-	right: clamp(-46rem, -46vw, -20rem);
+	right: clamp(-30rem, -26vw, -12rem);
 	width: max-content;
 	margin: 0;
 	color: var(--accent);
 	font-family: inherit;
-	font-size: clamp(1.6rem, 2.7vw, 3.1rem);
+	font-size: clamp(0.8rem, 1.3vw, 1.4rem);
 	font-weight: 600;
 	letter-spacing: 0;
 	line-height: 0.92;
-	opacity: 0.18;
+	opacity: 0.23;
 	white-space: pre;
 	transform: rotate(-9deg);
 	user-select: none;
 	pointer-events: none;
 }
+.contact-ascii-earth pre { margin: 0; font: inherit; line-height: inherit; white-space: pre; }
 .contact-heading-grid {
 	display: grid;
 	grid-template-columns: minmax(0, 1fr);
@@ -879,7 +880,7 @@ section { scroll-margin-top: var(--header-height); }
 	.stack-row { min-height: 10rem; gap: 1.5rem; }
 	.blog-list { grid-template-columns: minmax(0, 1fr); }
 	.blog-card-copy { min-height: auto; }
-	.contact-ascii-earth { top: -4rem; right: -19rem; width: max-content; font-size: clamp(0.82rem, 3.1vw, 1.25rem); opacity: 0.14; }
+	.contact-ascii-earth { top: -4rem; right: -8rem; width: max-content; font-size: clamp(0.65rem, 2.2vw, 0.9rem); opacity: 0.18; }
 	.contact-panel { margin-left: 0; }
 	.site-footer .page-frame { flex-direction: column; }
 }

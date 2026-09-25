@@ -9,6 +9,7 @@ export interface AsciiImageProps {
 	gamma?: number;
 	threshold?: number;
 	invert?: boolean;
+	background?: boolean;
 }
 
 type LoadState = "loading" | "ready" | "error";
@@ -100,6 +101,7 @@ export function AsciiImage({
 	gamma = 0.78,
 	threshold = 8,
 	invert = false,
+	background = false,
 }: AsciiImageProps) {
 	const imageRef = useRef<HTMLImageElement>(null);
 	const [ascii, setAscii] = useState("");
@@ -147,6 +149,22 @@ export function AsciiImage({
 	useEffect(() => {
 		transform();
 	}, [transform]);
+
+	if (background) {
+		return (
+			<div className="contact-ascii-earth" aria-hidden="true">
+				<pre>{ascii}</pre>
+				<img
+					ref={imageRef}
+					src={src}
+					alt=""
+					hidden
+					decoding="async"
+					onLoad={transform}
+				/>
+			</div>
+		);
+	}
 
 	return (
 		<figure className="ascii-figure">

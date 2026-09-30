@@ -1,14 +1,14 @@
 import { type MouseEvent, useEffect, useState } from "react";
+import type { SiteContent } from "../../../lib/portfolio-api";
 
-const navigation = [
-	["About", "#about"],
-	["Work", "#work"],
-	["Stack", "#stack"],
-	["Experiments", "#experiments"],
-	["Contact", "#contact"],
-] as const;
-
-export function Navigation() {
+export function Navigation({ site }: { site: SiteContent }) {
+	const navigation = [
+		[site.navAbout, "#about"],
+		[site.navWork, "#work"],
+		[site.navStack, "#stack"],
+		[site.navExperiments, "#experiments"],
+		[site.navContact, "#contact"],
+	] as const;
 	const [open, setOpen] = useState(false);
 	const [activeSection, setActiveSection] = useState<string | null>(null);
 
@@ -72,7 +72,7 @@ export function Navigation() {
 		return () => {
 			observer.disconnect();
 		};
-	}, []);
+	}, [site]);
 
 	return (
 		<header className="site-header">
@@ -80,10 +80,10 @@ export function Navigation() {
 				<a
 					href="#intro"
 					className="wordmark"
-					aria-label="lilzulf, back to intro"
+					aria-label={`${site.wordmark}, back to intro`}
 				>
 					<span aria-hidden="true">Z/</span>
-					<span>lilzulf</span>
+					<span>{site.wordmark}</span>
 				</a>
 				<div className="desktop-nav">
 					{navigation.map(([label, href]) => (

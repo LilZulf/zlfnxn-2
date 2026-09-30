@@ -1,5 +1,4 @@
 import { Link } from '@tanstack/react-router'
-import ResumeAssistantButton from './ResumeAssistantButton'
 import ThemeToggle from './ThemeToggle'
 
 export default function Header() {
@@ -24,13 +23,9 @@ export default function Header() {
           >
             Home
           </Link>
-          <Link
-            to="/about"
-            className="nav-link"
-            activeProps={{ className: 'nav-link is-active' }}
-          >
+          <a href="/#about" className="nav-link">
             About
-          </Link>
+          </a>
           <a
             href="https://tanstack.com/start/latest/docs/framework/react/overview"
             className="nav-link"
@@ -70,8 +65,6 @@ export default function Header() {
               />
             </svg>
           </a>
-          <ResumeAssistantButton />
-
           <ThemeToggle />
         </div>
       </nav>

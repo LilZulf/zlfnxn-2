@@ -17,6 +17,41 @@ To build this application for production:
 npm run build
 ```
 
+### Static build for cPanel
+
+```bash
+npm run build:static
+```
+
+Upload **the contents** of `dist-static/` to your domain's `public_html/`
+directory (or the document root of a subdomain). The generated `index.html`
+contains the rendered portfolio, and its JavaScript, CSS, fonts, and images are
+included in the same output folder. No Node.js process is needed on cPanel.
+
+Asset URLs start at `/`, so deploy this build at the root of a domain or
+subdomain.
+
+Portfolio content comes from `https://be.lilzulf.my.id/api/v1`. The build
+fetches the published site settings, work items, stack groups, and posts and
+prerenders them into `index.html`. The browser fetches them again when the page
+opens, so newly published content can appear without rebuilding. To use a
+different backend, set `VITE_CONTENT_API_URL` to its full `/api/v1` URL before
+building.
+
+The static HTML also includes the backend's SEO title and description, social
+sharing metadata, and structured data. Rebuild and redeploy after changing SEO
+fields or other content that search engines should see. The build includes
+`robots.txt` and `sitemap.xml` for `https://lilzulf.my.id/`.
+
+On the deployed Laravel backend, set `CONTENT_FRONTEND_ORIGIN` to
+`https://lilzulf.my.id` so browsers may read the API. Set `APP_URL` to
+`https://be.lilzulf.my.id` so uploaded image URLs use the public domain.
+The web server serving `/storage/*` must also return
+`Access-Control-Allow-Origin: https://lilzulf.my.id` for images used by the
+ASCII transformer. API CORS settings alone may not affect those static files.
+Bundled copies of the current portfolio images are used if the browser blocks
+their remote versions; newly uploaded images need the server header.
+
 ## Styling
 
 This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
@@ -44,14 +79,12 @@ npm run check
 
 # Resume Example
 
-A professional resume template built with TanStack Start and content-collections for Netlify deployment.
+A personal portfolio built with TanStack Start for static deployment.
 
 ## Features
 
-- **Content Collections**: Work experience and education managed as markdown files
-- **Skills Filter**: Interactive sidebar to filter jobs by skills/technologies
-- **Beautiful UI**: Modern design with shadcn/ui components
-- **SSR Ready**: Full server-side rendering with TanStack Start
+- **Static Build**: Prerendered HTML and browser assets for shared hosting
+- **Interactive UI**: Client-side animations and portfolio sections
 
 ## Project Structure
 

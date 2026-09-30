@@ -351,6 +351,8 @@ section { scroll-margin-top: var(--header-height); }
 	will-change: clip-path;
 }
 
+.ascii-frame[data-image-fallback="true"] .ascii-original { clip-path: inset(0); }
+
 @media (hover: hover) {
 	.ascii-frame:hover .ascii-original { clip-path: inset(0); }
 }
@@ -706,6 +708,7 @@ section { scroll-margin-top: var(--header-height); }
 	pointer-events: none;
 }
 .contact-ascii-earth pre { margin: 0; font: inherit; line-height: inherit; white-space: pre; }
+.contact-ascii-earth img:not([hidden]) { display: block; width: min(45vw, 36rem); height: auto; }
 .contact-heading-grid {
 	display: grid;
 	grid-template-columns: minmax(0, 1fr);

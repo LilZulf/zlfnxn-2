@@ -13,14 +13,6 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'Ahmad Zulfan Najib | Software Engineer',
-      },
-      {
-        name: 'description',
-        content:
-          'Portfolio of Ahmad Zulfan Najib, a software engineer focused on backend systems, integrations, and real-time software.',
-      },
-      {
         name: 'theme-color',
         content: '#050805',
       },

@@ -12,9 +12,20 @@ export interface AsciiImageProps {
 	background?: boolean;
 }
 
-type LoadState = "loading" | "ready" | "error";
+type LoadState = "loading" | "ready" | "fallback" | "error";
 
 const asciiCache = new Map<string, string>();
+const bundledImageFallbacks: Record<string, string> = {
+	"/storage/posts/signal-field.webp": "/media/signal-field.webp",
+	"/storage/posts/earth-signal.png": "/media/earth-signal.png",
+	"/storage/site/earth-signal.png": "/media/earth-signal.png",
+};
+
+function getBundledImageFallback(src: string) {
+	const url = new URL(src, "https://be.lilzulf.my.id");
+	if (url.origin !== "https://be.lilzulf.my.id") return null;
+	return bundledImageFallbacks[url.pathname] ?? null;
+}
 
 function cacheKey(
 	src: string,
@@ -104,8 +115,25 @@ export function AsciiImage({
 	background = false,
 }: AsciiImageProps) {
 	const imageRef = useRef<HTMLImageElement>(null);
+	const [imageSrc, setImageSrc] = useState(src);
 	const [ascii, setAscii] = useState("");
 	const [loadState, setLoadState] = useState<LoadState>("loading");
+
+	useEffect(() => {
+		setImageSrc(src);
+		setAscii("");
+		setLoadState("loading");
+	}, [src]);
+
+	const handleImageError = () => {
+		const fallback = getBundledImageFallback(src);
+		if (fallback && imageSrc !== fallback) {
+			setImageSrc(fallback);
+			setLoadState("loading");
+			return;
+		}
+		setLoadState("error");
+	};
 
 	const transform = useCallback(() => {
 		const image = imageRef.current;
@@ -128,7 +156,8 @@ export function AsciiImage({
 			);
 			setLoadState("ready");
 		} catch {
-			setLoadState("error");
+			// Cross-origin images may display even when canvas pixel reads are blocked.
+			setLoadState("fallback");
 		}
 	}, [
 		characters,
@@ -156,11 +185,13 @@ export function AsciiImage({
 				<pre>{ascii}</pre>
 				<img
 					ref={imageRef}
-					src={src}
+					src={imageSrc}
+					crossOrigin="anonymous"
 					alt=""
-					hidden
+					hidden={loadState !== "fallback"}
 					decoding="async"
 					onLoad={transform}
+					onError={handleImageError}
 				/>
 			</div>
 		);
@@ -169,20 +200,21 @@ export function AsciiImage({
 	return (
 		<figure className="ascii-figure">
 			<div className="ascii-frame-shell">
-				<article className="ascii-frame">
+				<article className="ascii-frame" data-image-fallback={loadState === "fallback" ? "true" : undefined}>
 					<pre aria-hidden="true" className="ascii-output">
 						{ascii || "INITIALIZING SOURCE..."}
 					</pre>
 					<div className="ascii-original" aria-hidden="true">
 						<img
 							ref={imageRef}
-							src={src}
+							src={imageSrc}
+							crossOrigin="anonymous"
 							alt=""
 							width="1024"
 							height="1536"
 							decoding="async"
 							onLoad={transform}
-							onError={() => setLoadState("error")}
+							onError={handleImageError}
 						/>
 					</div>
 					{loadState === "error" && (

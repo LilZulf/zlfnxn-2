@@ -8,7 +8,13 @@ import {
 	Share2,
 	Waypoints,
 	Webhook,
+	type LucideIcon,
 } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+	getPortfolioContent,
+	type PortfolioContent,
+} from "../../../lib/portfolio-api";
 import { Reveal } from "../atoms/Reveal";
 import { RevealController } from "../atoms/RevealController";
 import { SectionIndex } from "../atoms/SectionIndex";
@@ -16,135 +22,56 @@ import { AsciiImage } from "../molecules/AsciiImage";
 import { HeroRadar } from "../molecules/HeroRadar";
 import { StackMarquee } from "../molecules/StackMarquee";
 import { Navigation } from "../organisms/Navigation";
-import type { PortfolioEntry } from "../types";
+const workIcons: Record<string, LucideIcon> = {
+	waypoints: Waypoints,
+	"radio-tower": RadioTower,
+	"git-fork": GitFork,
+};
 
-const work: readonly PortfolioEntry[] = [
-	{
-		id: "reservation-systems",
-		title: "Reservation Systems Integration",
-		summary:
-			"Reservation flows connected across backend services, APIs, and external system boundaries.",
-		stack: ["SYSTEM INTEGRATION", "API", "MIDDLEWARE"],
-	},
-	{
-		id: "real-time-data",
-		title: "Real-Time Data Processing",
-		summary:
-			"Event-driven data flows designed for timely processing and reliable message handling.",
-		stack: ["KAFKA", "EVENT DRIVEN", "REAL TIME SYSTEMS"],
-	},
-	{
-		id: "distributed-backend",
-		title: "Distributed Backend Services",
-		summary:
-			"Backend services shaped around clear interfaces, messaging, data, and infrastructure.",
-		stack: ["MICROSERVICES", "DISTRIBUTED SYSTEMS", "DOCKER"],
-	},
-] as const;
+const stackIcons: Record<string, LucideIcon> = {
+	webhook: Webhook,
+	"chart-network": ChartNetwork,
+	"radio-tower": RadioTower,
+	"satellite-dish": SatelliteDish,
+	"share-2": Share2,
+	network: Network,
+};
 
-const stackGroups = [
-	["Backend", "Java / Spring Boot / Node.js / Laravel / Python / Go"],
-	["Data", "PostgreSQL / Redis"],
-	["Messaging", "Kafka / Event Driven"],
-	["Infrastructure", "Docker / Automation"],
-	["Frontend", "React / Next.js"],
-	["Architecture", "Microservices / API / Middleware / Distributed Systems"],
-] as const;
+export function PortfolioPage({ initialContent }: { initialContent: PortfolioContent }) {
+	const [content, setContent] = useState(initialContent);
 
-const marqueeItems = [
-	"JAVA",
-	"SPRING BOOT",
-	"NODE.JS",
-	"KAFKA",
-	"POSTGRESQL",
-	"REDIS",
-	"DOCKER",
-	"REACT",
-	"GO",
-] as const;
+	useEffect(() => {
+		const controller = new AbortController();
+		getPortfolioContent(controller.signal)
+			.then((result) => {
+				setContent(result);
+			})
+			.catch((reason: unknown) => {
+				if (controller.signal.aborted) return;
+				console.error("Failed to load portfolio content", reason);
+			});
+		return () => controller.abort();
+	}, []);
 
-const radarTerms = [
-	"AHMAD ZULFAN NAJIB",
-	"lilzulf",
-	"SOFTWARE ENGINEER",
-	"BACKEND ENGINEER",
-	"SYSTEM INTEGRATION",
-	"JAVA",
-	"SPRING BOOT",
-	"NODE.JS",
-	"REACT",
-	"KAFKA",
-	"POSTGRESQL",
-	"REDIS",
-	"DOCKER",
-	"MICROSERVICES",
-	"EVENT DRIVEN",
-	"DISTRIBUTED SYSTEMS",
-] as const;
+	useEffect(() => {
+		document.title = content.site.seoTitle;
+		document
+			.querySelector('meta[name="description"]')
+			?.setAttribute("content", content.site.seoDescription);
+	}, [content]);
 
-const blogPosts = [
-	{
-		title: "When services need a shared language",
-		summary:
-			"A practical look at the boundaries, contracts, and small decisions that keep integrations legible.",
-		src: "/media/earth-signal.png",
-		alt: "Earth viewed from low orbit with a thin green atmospheric rim",
-	},
-	{
-		title: "Designing event flows that stay observable",
-		summary:
-			"What to record before a message enters the queue, and how that context helps the next system respond.",
-		src: "/media/signal-field.webp",
-		alt: "Green signal traces crossing a dark fibre surface",
-	},
-	{
-		title: "The quiet cost of leaky boundaries",
-		summary:
-			"A note on ownership, coupling, and the hidden maintenance work created by unclear system edges.",
-		src: "/media/earth-signal.png",
-		alt: "Earth viewed from low orbit with a thin green atmospheric rim",
-	},
-	{
-		title: "A field guide to integration seams",
-		summary:
-			"Patterns for translating between external systems without letting one unreliable edge shape the whole platform.",
-		src: "/media/signal-field.webp",
-		alt: "Abstract green traces representing connected systems",
-	},
-	{
-		title: "Why reliability starts before deployment",
-		summary:
-			"The useful checks happen in interfaces, failure paths, and assumptions long before a service reaches production.",
-		src: "/media/earth-signal.png",
-		alt: "Earth viewed from low orbit with a thin green atmospheric rim",
-	},
-	{
-		title: "Small automations, fewer handoffs",
-		summary:
-			"A compact argument for removing repeated manual steps before adding another layer of operational complexity.",
-		src: "/media/signal-field.webp",
-		alt: "Luminous signal lines moving across a dark surface",
-	},
-] as const;
+	return <PortfolioView content={content} />;
+}
 
-const workIcons = [Waypoints, RadioTower, GitFork] as const;
-const stackIcons = [
-	Webhook,
-	ChartNetwork,
-	RadioTower,
-	SatelliteDish,
-	Share2,
-	Network,
-] as const;
-
-export function PortfolioPage() {
+function PortfolioView({ content }: { content: PortfolioContent }) {
+	const { site, work, stack, posts } = content;
 	return (
 		<>
 			<a className="skip-link" href="#main-content">
-				Skip to content
+				{site.skipLink}
 			</a>
 			<RevealController />
-			<Navigation />
+			<Navigation site={site} />
 			<main id="main-content">
 				<section
 					id="intro"
@@ -152,21 +79,20 @@ export function PortfolioPage() {
 					aria-labelledby="intro-title"
 				>
 					<div className="hero-ghost" aria-hidden="true">
-						lilzulf lilzulf lilzulf
+						{site.wordmark} {site.wordmark} {site.wordmark}
 					</div>
 					<div className="page-frame hero-grid">
 						<div className="hero-copy">
 							<Reveal as="h1" id="intro-title" delay={70}>
-								<span data-text="AHMAD">AHMAD</span>
-								<span data-text="ZULFAN NAJIB">ZULFAN NAJIB</span>
+								<span data-text={site.heroNameFirst}>{site.heroNameFirst}</span>
+								<span data-text={site.heroNameSecond}>{site.heroNameSecond}</span>
 							</Reveal>
 							<Reveal as="p" className="hero-summary" delay={140}>
-								Backend systems, integrations, and real-time software built for
-								reliability.
+								{site.heroSummary}
 							</Reveal>
 							<Reveal delay={210}>
 								<a className="primary-link" href="#work">
-									<span>View work</span>
+									<span>{site.heroCta}</span>
 									<Eye
 										className="signal-icon"
 										aria-hidden="true"
@@ -176,7 +102,7 @@ export function PortfolioPage() {
 							</Reveal>
 						</div>
 						<Reveal className="hero-media" delay={150}>
-							<HeroRadar terms={radarTerms} />
+							<HeroRadar terms={site.radarTerms} />
 						</Reveal>
 					</div>
 				</section>
@@ -190,7 +116,7 @@ export function PortfolioPage() {
 						<SectionIndex number="02" />
 						<div className="section-content about-content">
 							<Reveal as="h2" id="about-title">
-								I build at the point where systems need to talk.
+								{site.aboutHeading}
 							</Reveal>
 							<Reveal className="about-signal-map" delay={70}>
 								<div aria-hidden="true">
@@ -204,13 +130,10 @@ export function PortfolioPage() {
 							</Reveal>
 							<div className="about-columns">
 								<Reveal as="p" delay={80}>
-									Software Engineer focused on backend engineering, fullstack
-									development, and system integration.
+									{site.aboutParagraphOne}
 								</Reveal>
 								<Reveal as="p" delay={140}>
-									Interested in distributed architecture, automation, AI,
-									infrastructure, and software that stays reliable under
-									real-world conditions.
+									{site.aboutParagraphTwo}
 								</Reveal>
 							</div>
 						</div>
@@ -226,18 +149,18 @@ export function PortfolioPage() {
 						<SectionIndex number="03" />
 						<div className="section-content">
 							<Reveal as="h2" id="work-title" className="section-title">
-								Selected systems themes
+								{site.workHeading}
 							</Reveal>
 							<div className="work-list">
 								{work.map((entry, index) => (
 									<Reveal
 										as="article"
 										className={`work-row work-row-${index + 1}`}
-										key={entry.id}
+										key={entry.slug}
 										delay={index * 70}
 									>
 										{(() => {
-											const WorkIcon = workIcons[index];
+											const WorkIcon = workIcons[entry.icon] ?? Waypoints;
 											return (
 												<WorkIcon
 													className="work-symbol"
@@ -268,20 +191,20 @@ export function PortfolioPage() {
 					className="portfolio-section stack-section"
 					aria-labelledby="stack-title"
 				>
-					<StackMarquee items={marqueeItems} />
+					<StackMarquee items={site.marqueeItems} />
 					<div className="page-frame section-grid">
 						<SectionIndex number="04" />
 						<div className="section-content">
 							<Reveal as="h2" id="stack-title" className="section-title">
-								Tools are chosen around the system.
+								{site.stackHeading}
 							</Reveal>
 							<div className="stack-list">
-								{stackGroups.map(([category, items], index) => {
-									const StackIcon = stackIcons[index];
+								{stack.map((group, index) => {
+									const StackIcon = stackIcons[group.icon] ?? Network;
 									return (
 										<Reveal
 											className={`stack-row stack-row-${index + 1}`}
-											key={category}
+											key={group.category}
 											delay={index * 45}
 										>
 											<div className="stack-row-heading">
@@ -290,9 +213,9 @@ export function PortfolioPage() {
 													aria-hidden="true"
 													strokeWidth={1.35}
 												/>
-												<h3>{category}</h3>
+												<h3>{group.category}</h3>
 											</div>
-											<p>{items}</p>
+											<p>{group.items}</p>
 										</Reveal>
 									);
 								})}
@@ -310,21 +233,22 @@ export function PortfolioPage() {
 						<SectionIndex number="05" />
 						<div className="section-content blog-content">
 							<Reveal className="experiments-heading">
-								<h2 id="experiments-title">Notes from the system.</h2>
+								<h2 id="experiments-title">{site.experimentsHeading}</h2>
 								<p>
-									Short writing on integrations, distributed systems, and the
-									work between services.
+									{site.experimentsSummary}
 								</p>
 							</Reveal>
 							<div className="blog-list">
-								{blogPosts.map((post, index) => (
+								{posts.map((post, index) => (
 									<Reveal
 										as="article"
 										className="blog-card"
-										key={post.title}
+										key={post.slug}
 										delay={index * 55}
 									>
-										<AsciiImage src={post.src} alt={post.alt} />
+										{post.imageUrl && (
+											<AsciiImage src={post.imageUrl} alt={post.imageAlt} />
+										)}
 										<div className="blog-card-copy">
 											<h3>{post.title}</h3>
 											<p>{post.summary}</p>
@@ -344,29 +268,30 @@ export function PortfolioPage() {
 					<div className="page-frame section-grid">
 						<SectionIndex number="06" />
 						<div className="section-content contact-content">
-							<AsciiImage src="/media/earth-signal.png" alt="" background />
+							{site.contactImageUrl && (
+								<AsciiImage src={site.contactImageUrl} alt="" background />
+							)}
 							<div className="contact-heading-grid">
 								<div>
-									<Reveal as="p">THE SIGNAL ENDS HERE.</Reveal>
+									<Reveal as="p">{site.contactEyebrow}</Reveal>
 									<Reveal as="h2" id="contact-title" delay={70}>
-										Find me as <span>lilzulf.</span>
+										{site.contactHeading} <span>{site.contactHighlight}</span>
 									</Reveal>
 								</div>
 							</div>
 							<Reveal className="contact-panel" delay={100}>
 								<div className="contact-panel-intro">
-									<span className="contact-panel-index">[ OPEN CHANNEL ]</span>
+									<span className="contact-panel-index">{site.contactPanelLabel}</span>
 									<p>
-										For systems, collaborations, or a thoughtful exchange about
-										software.
+										{site.contactIntro}
 									</p>
 									<a
 										className="whatsapp-link"
-										href="https://wa.me/?text=Halo%20Ahmad%2C%20saya%20ingin%20berdiskusi%20tentang%20proyek."
+										href={site.whatsappUrl}
 										target="_blank"
 										rel="noreferrer"
 									>
-										Send to WhatsApp{" "}
+										{site.whatsappLabel}{" "}
 										<RadioTower
 											className="signal-icon"
 											aria-hidden="true"
@@ -377,8 +302,8 @@ export function PortfolioPage() {
 								<div className="contact-details">
 									<div className="contact-detail">
 										<span>EMAIL</span>
-										<a href="mailto:hello@lilzulf.dev">
-											hello@lilzulf.dev{" "}
+										<a href={`mailto:${site.email}`}>
+											{site.email}{" "}
 											<Waypoints
 												className="signal-icon"
 												aria-hidden="true"
@@ -388,17 +313,17 @@ export function PortfolioPage() {
 									</div>
 									<div className="contact-detail">
 										<span>STATUS</span>
-										<strong>AVAILABLE / SELECTIVE</strong>
+										<strong>{site.status}</strong>
 									</div>
 									<div className="contact-detail">
 										<span>LOCATION</span>
-										<strong>INDONESIA / UTC+7</strong>
+										<strong>{site.location}</strong>
 									</div>
 								</div>
 							</Reveal>
 							<Reveal delay={130}>
 								<a className="return-link" href="#intro">
-									Return to intro <span aria-hidden="true">↑</span>
+									{site.returnLabel} <span aria-hidden="true">↑</span>
 								</a>
 							</Reveal>
 						</div>
@@ -407,8 +332,8 @@ export function PortfolioPage() {
 			</main>
 			<footer className="site-footer">
 				<div className="page-frame">
-					<span>AHMAD ZULFAN NAJIB</span>
-					<span>SOFTWARE ENGINEER / lilzulf</span>
+					<span>{site.footerName}</span>
+					<span>{site.footerRole}</span>
 				</div>
 			</footer>
 		</>
